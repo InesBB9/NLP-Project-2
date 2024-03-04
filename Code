@@ -1,0 +1,36 @@
+import pip
+from importlib.util import find_spec
+
+required_packages = ['transformers', 'torch']
+
+for package in required_packages:
+  if find_spec(package) is None:
+    print(f'Installing package: {package}...')
+    pip.main(['install', package])
+
+import torch
+from transformers import AutoModelForMaskedLM
+from transformers import AutoTokenizer
+from pprint import pprint
+
+model_name = 'PlanTL-GOB-ES/roberta-base-bne'
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModelForMaskedLM.from_pretrained(model_name, output_hidden_states = True, )
+model.eval()
+#model_mask = pipeline('fill-mask', model=model_name)
+
+#In this variable, the list of words that will be analyzed is specified.
+word_list = ["aceptable", "brevedad", "taxista", "consumismo", "poemario", "alumnado", "porrazo", "rosaleda", "portero", "zapatería", "preescolar", "irracional", "inaceptable", "subespecie", "antidisturbios", "sobrevolar", "contraataque", "deshacer", "protaurino", "monoparental", "mueble", "prepucio", "sorpresa", "oficina", "impresionar", "rústico", "técnica", "indicio", "rutina", "trigo", "verde", "ayer", "casa", "camisa", "álbum", "papel", "collar", "luna", "radio", "lejos"]
+
+#Iterate over each word in the list
+for word in word_list:
+    marked_text = word
+    print(f'input: {marked_text}')
+
+    #Tokenize the sentence with the BERT tokenizer, which is based on the BPE algorithm.
+    tokenized_text = tokenizer.tokenize(marked_text)
+
+    #Here, we print out the input, the tokenized word and the total number of tokens that the BPE algorithm has detected.
+    print(f'tokenized: {tokenized_text}')
+    print(f'number of tokens: {len(tokenized_text)}')
+    print("\n")
